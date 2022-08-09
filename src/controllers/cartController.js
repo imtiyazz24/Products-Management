@@ -41,7 +41,7 @@ const createCart = async function (req, res) {
         if (cart) {
             let productIds = cart.items.map(x => x.productId.toString())
             if (productIds.includes(productId)) {
-                let updatedCart = await cartModel.findOneAndUpdate({ "items.productId": productId, userId: userId }, { $inc: { "items.quantity": 1, totalPrice: productPrice } }, { new: true })
+                let updatedCart = await cartModel.findOneAndUpdate({ "items.productId": productId, userId: userId }, { $inc: { "items.$.quantity": 1, totalPrice: productPrice } }, { new: true })
                 return res.status(200).send({ status: true, message: "items added successfully", data: updatedCart })
             }
             else {
@@ -61,6 +61,7 @@ const createCart = async function (req, res) {
         return res.status(201).send({ status: true, message: "cart created successfully", data: cartCreated })
     }
     catch (err) {
+        console.log(err)
         return res.status(500).send({ status: false, error: err.message })
     }
 }
